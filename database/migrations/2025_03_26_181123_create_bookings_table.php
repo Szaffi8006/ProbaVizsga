@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->string('startDate');
-            $table->string('endDate');
+            $table->date('startDate');
+            $table->date('endDate');
             $table->foreignId('car_id');
             $table->integer('totalPrice');
             $table->string('userUID');
