@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class BookingRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class BookingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,9 +24,17 @@ class BookingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "startDate"=>"required|after_or_equal:today|before:endDate",
+            "startDate"=>"required|date|after_or_equal:today|before:endDate",
             "endDate"=>"required|after:startDate",
             "totalPrice"=>"required|numeric|min:0",
         ];
+    }
+    public function failedValidation( Validator $validator ) {
+ 
+        throw new HttpResponseException( response()->json([
+            "success" => false,
+            "message" => "Adatbeviteli hiba",
+            "error" => $validator->errors()
+        ]));
     }
 }

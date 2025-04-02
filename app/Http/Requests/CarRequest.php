@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class CarRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class CarRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,5 +30,13 @@ class CarRequest extends FormRequest
             "year"=>"required|integer|min:2000|max:2025",
             "dailyPrice"=>"required|numeric|between:100,2000",
         ];
+    }
+    public function failedValidation( Validator $validator ) {
+ 
+        throw new HttpResponseException( response()->json([
+            "success" => false,
+            "message" => "Adatbeviteli hiba",
+            "error" => $validator->errors()
+        ]));
     }
 }
